@@ -69,7 +69,7 @@ async function getUserBoards(userId: string) {
 
 async function removeCookie(api: string) {
   try {
-    await fetch(`${boardsAPI}/removeCookie`, {
+    await fetch(`${api}/removeCookie`, {
       method: "DELETE",
     }).catch((error) => console.error(error));
   } catch (error) {

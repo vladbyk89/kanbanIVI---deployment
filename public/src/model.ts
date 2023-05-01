@@ -75,7 +75,6 @@ class Board {
       .then((res) => res.json())
       .then(({ board }) => board)
       .catch((error) => console.error(error));
-
     const boardLists: ListTemplate[] = await fetch(`${listsAPI}/${board._id}`)
       .then((res) => res.json())
       .then(({ lists }) => lists)

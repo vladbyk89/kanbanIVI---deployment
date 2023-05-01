@@ -16,6 +16,7 @@ exports.updateBoard = exports.addListToBoard = exports.deleteBoard = exports.get
 const BoardModel_1 = __importDefault(require("../model/BoardModel"));
 const UserModel_1 = __importDefault(require("../model/UserModel"));
 const ListModel_1 = __importDefault(require("../model/ListModel"));
+const jwt_simple_1 = __importDefault(require("jwt-simple"));
 const secret = process.env.JWT_SECRET;
 const getAllBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -36,8 +37,17 @@ const createBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
             imageSrc,
             userArray: [user],
         });
-        req.body = board._id;
-        next();
+        if (!secret)
+            throw new Error("Missing jwt secret");
+        const boardId = board._id;
+        const token = jwt_simple_1.default.encode({ boardId, role: "public" }, secret);
+        if (!token)
+            throw new Error("Missing token...");
+        res.cookie("board", token, {
+            maxAge: 60 * 60 * 1000,
+            httpOnly: true,
+        });
+        res.status(200).json({ board });
     }
     catch (error) {
         console.error(error);

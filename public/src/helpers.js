@@ -66,7 +66,7 @@ function getUserBoards(userId) {
 function removeCookie(api) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield fetch(`${boardsAPI}/removeCookie`, {
+            yield fetch(`${api}/removeCookie`, {
                 method: "DELETE",
             }).catch((error) => console.error(error));
         }

@@ -33,8 +33,19 @@ export const createBoard = async (
       imageSrc,
       userArray: [user],
     });
-    req.body = board._id;
-    next();
+
+    if (!secret) throw new Error("Missing jwt secret");
+    const boardId = board._id;
+    const token = jwt.encode({ boardId, role: "public" }, secret);
+
+    if (!token) throw new Error("Missing token...");
+
+    res.cookie("board", token, {
+      maxAge: 60 * 60 * 1000, //1 hour
+      httpOnly: true,
+    });
+
+    res.status(200).json({ board });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({ error: error.message });
@@ -122,7 +133,7 @@ export const updateBoard = async (
 ) => {
   try {
     const { id: boardId } = req.params;
-    
+
     const { boardName, imageSrc } = req.body;
 
     await Board.findByIdAndUpdate(boardId, { boardName, imageSrc });
