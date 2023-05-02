@@ -2,6 +2,7 @@
 const usersAPI = "/api/v1/users";
 const boardsAPI = "/api/v1/boards";
 const listsAPI = "/api/v1/lists";
+const notificationsAPI = "/api/v1/notifications";
 // Entry Page elements
 const signInForm = document.querySelector("#signInForm");
 const signUpForm = document.querySelector("#signUpForm");
