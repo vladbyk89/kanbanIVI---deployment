@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateList = exports.deleteList = exports.createList = exports.getAllLists = void 0;
 const ListModel_1 = __importDefault(require("../model/ListModel"));
 const BoardModel_1 = __importDefault(require("../model/BoardModel"));
+const notificationModel_1 = __importDefault(require("../model/notificationModel"));
+const UserModel_1 = __importDefault(require("../model/UserModel"));
 const getAllLists = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const list = yield ListModel_1.default.find({});
@@ -27,12 +29,20 @@ const getAllLists = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 exports.getAllLists = getAllLists;
 const createList = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { listName, boardId } = req.body;
+        const { listName, boardId, userId } = req.body;
         const list = yield ListModel_1.default.create({ listName });
-        const findBoard = yield BoardModel_1.default.findByIdAndUpdate(boardId, {
+        const board = yield BoardModel_1.default.findById(boardId);
+        if (!board)
+            return;
+        yield BoardModel_1.default.findByIdAndUpdate(boardId, {
             $push: { listArray: list._id },
         });
-        const board = yield BoardModel_1.default.findById(boardId);
+        const createNotification = yield notificationModel_1.default.create({
+            message: `List by the name "${listName}" is created at board - ${board.boardName}.`,
+        });
+        yield UserModel_1.default.findByIdAndUpdate(userId, {
+            $push: { notifications: createNotification._id },
+        });
         res.status(200).json({ list, board });
     }
     catch (error) {
@@ -41,26 +51,18 @@ const createList = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.createList = createList;
-// export const getBoardLists = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const { id: boardId } = req.params;
-//     const board = await Board.findById(boardId);
-//     const lists = await List.find({ board });
-//     res.status(200).json({ lists });
-//   } catch (error: any) {
-//     console.error(error);
-//     res.status(500).send({ error: error.message });
-//   }
-// };
 const deleteList = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id: listId } = req.params;
+        const { userId, listName, boardName } = req.body;
         const list = yield ListModel_1.default.deleteOne({ _id: listId });
         const lists = yield ListModel_1.default.find({});
+        const createNotification = yield notificationModel_1.default.create({
+            message: `List by the name "${listName}" is deleted at board - ${boardName}.`,
+        });
+        yield UserModel_1.default.findByIdAndUpdate(userId, {
+            $push: { notifications: createNotification._id },
+        });
         res.status(200).send({ lists });
     }
     catch (error) {

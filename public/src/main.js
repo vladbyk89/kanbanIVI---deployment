@@ -150,14 +150,23 @@ if (window.location.pathname.endsWith("/board")) {
         }
     });
     trashCan.addEventListener("drop", () => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
         const confirmDelete = confirm("Are you sure you want to delete?");
         if (confirmDelete) {
             const element = document.querySelector(".isDragging");
+            const listName = (_a = element.querySelector("h2")) === null || _a === void 0 ? void 0 : _a.innerHTML;
             element.remove();
             if (element.classList.contains("boardContainer__main__list")) {
                 const listId = element.id;
+                const boardName = currentBoard.name;
+                const userId = currentUser.id;
                 yield fetch(`${listsAPI}/${listId}`, {
                     method: "DELETE",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userId, listName, boardName }),
                 }).catch((error) => console.error(error));
             }
             currentBoard.update();

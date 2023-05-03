@@ -84,7 +84,6 @@ class Board {
     update() {
         return __awaiter(this, void 0, void 0, function* () {
             this.listArray = [];
-            const boardId = this.id;
             const listElements = boardContainer.querySelectorAll(".boardContainer__main__list");
             listElements.forEach((list) => __awaiter(this, void 0, void 0, function* () {
                 var _a;
@@ -138,6 +137,7 @@ class Board {
                 body: JSON.stringify({ boardName, imageSrc, boardId }),
             });
             this.listArray.forEach((list) => __awaiter(this, void 0, void 0, function* () {
+                const userId = currentUser.id;
                 yield fetch(`${listsAPI}/${list.id}`, {
                     method: "PATCH",
                     headers: {
@@ -147,7 +147,6 @@ class Board {
                     body: JSON.stringify({
                         listName: list.name,
                         cardsArray: list.cards,
-                        boardId,
                     }),
                 });
             }));
@@ -168,13 +167,14 @@ class List {
         return __awaiter(this, void 0, void 0, function* () {
             if (newListInput.value == "")
                 return;
+            const userId = currentUser.id;
             const createdList = yield fetch(`${listsAPI}`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ listName, boardId }),
+                body: JSON.stringify({ listName, boardId, userId }),
             })
                 .then((res) => res.json())
                 .then(({ list }) => list)

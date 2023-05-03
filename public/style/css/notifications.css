@@ -4,11 +4,10 @@
 
 .notificationDiv {
   background-color: whitesmoke;
-  color: black;
   position: absolute;
   top: 110%;
   right: 0;
-  width: 20vw;
+  width: 30vw;
   height: 90vh;
   cursor: default;
   overflow-y: auto;
@@ -26,6 +25,8 @@
   padding: 0.5rem;
   font-size: 0.7rem;
   font-family: "Courier New", Courier, monospace;
+  color: black;
+  font-weight: bolder;
 }
 
 .notificationDiv::-webkit-scrollbar {

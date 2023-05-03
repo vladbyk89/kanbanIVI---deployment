@@ -1,6 +1,8 @@
 import { NextFunction, Response, Request } from "express";
 import List from "../model/ListModel";
-import Board from "../model/BoardModel";
+import Board, { BoardInterface } from "../model/BoardModel";
+import Notification from "../model/notificationModel";
+import User from "../model/UserModel";
 
 export const getAllLists = async (
   req: Request,
@@ -21,15 +23,25 @@ export const createList = async (
   next: NextFunction
 ) => {
   try {
-    const { listName, boardId } = req.body;
+    const { listName, boardId, userId } = req.body;
 
     const list = await List.create({ listName });
 
-    const findBoard = await Board.findByIdAndUpdate(boardId, {
+    const board: BoardInterface | null = await Board.findById(boardId);
+
+    if (!board) return;
+
+    await Board.findByIdAndUpdate(boardId, {
       $push: { listArray: list._id },
     });
 
-    const board = await Board.findById(boardId);
+    const createNotification = await Notification.create({
+      message: `List by the name "${listName}" is created at board - ${board.boardName}.`,
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { notifications: createNotification._id },
+    });
 
     res.status(200).json({ list, board });
   } catch (error: any) {
@@ -38,22 +50,6 @@ export const createList = async (
   }
 };
 
-// export const getBoardLists = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const { id: boardId } = req.params;
-//     const board = await Board.findById(boardId);
-//     const lists = await List.find({ board });
-//     res.status(200).json({ lists });
-//   } catch (error: any) {
-//     console.error(error);
-//     res.status(500).send({ error: error.message });
-//   }
-// };
-
 export const deleteList = async (
   req: Request,
   res: Response,
@@ -61,8 +57,18 @@ export const deleteList = async (
 ) => {
   try {
     const { id: listId } = req.params;
+    const { userId, listName, boardName } = req.body;
+
     const list = await List.deleteOne({ _id: listId });
     const lists = await List.find({});
+
+    const createNotification = await Notification.create({
+      message: `List by the name "${listName}" is deleted at board - ${boardName}.`,
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { notifications: createNotification._id },
+    });
 
     res.status(200).send({ lists });
   } catch (error: any) {
@@ -79,11 +85,12 @@ export const updateList = async (
   try {
     const { id: listId } = req.params;
     const { listName, cardsArray } = req.body;
-    
+
     const list = await List.findByIdAndUpdate(listId, {
       listName,
       cardsArray,
     });
+
     res.status(201).json({ list });
   } catch (error: any) {
     console.error(error);

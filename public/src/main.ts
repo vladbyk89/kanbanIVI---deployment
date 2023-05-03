@@ -190,14 +190,26 @@ if (window.location.pathname.endsWith("/board")) {
     const confirmDelete = confirm("Are you sure you want to delete?");
     if (confirmDelete) {
       const element = document.querySelector(".isDragging") as HTMLDivElement;
-      element.remove();
+      const listName = element.querySelector("h2")?.innerHTML;
 
+      element.remove();
+      
       if (element.classList.contains("boardContainer__main__list")) {
+
         const listId = element.id;
+        const boardName = currentBoard.name;
+        const userId = currentUser.id;
+
         await fetch(`${listsAPI}/${listId}`, {
           method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, listName, boardName }),
         }).catch((error) => console.error(error));
       }
+      
       currentBoard.update();
     }
   });

@@ -112,7 +112,6 @@ class Board {
 
   async update() {
     this.listArray = [];
-    const boardId = this.id;
 
     const listElements = boardContainer.querySelectorAll(
       ".boardContainer__main__list"
@@ -179,6 +178,7 @@ class Board {
     });
 
     this.listArray.forEach(async (list) => {
+      const userId = currentUser.id;
       await fetch(`${listsAPI}/${list.id}`, {
         method: "PATCH",
         headers: {
@@ -188,7 +188,6 @@ class Board {
         body: JSON.stringify({
           listName: list.name,
           cardsArray: list.cards,
-          boardId,
         }),
       });
     });
@@ -216,14 +215,14 @@ class List {
 
   static async createList(listName: string, boardId: string) {
     if (newListInput.value == "") return;
-
+    const userId = currentUser.id;
     const createdList: ListTemplate = await fetch(`${listsAPI}`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ listName, boardId }),
+      body: JSON.stringify({ listName, boardId, userId }),
     })
       .then((res) => res.json())
       .then(({ list }) => list)
