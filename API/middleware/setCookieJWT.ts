@@ -10,7 +10,7 @@ export const setBoardCookie = async (
   try {
     if (!secret) throw new Error("Missing jwt secret");
 
-    const { boardId } = req.params;
+    const { id: boardId } = req.params;
 
     const token = jwt.encode({ boardId, role: "public" }, secret);
 

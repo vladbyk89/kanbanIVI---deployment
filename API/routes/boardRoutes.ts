@@ -24,14 +24,13 @@ boardRouter.route("/removeCookie").delete(removeBoardCookie);
 
 boardRouter.route("/getBoard").get(boardCookieAuthentication, getBoard);
 
-boardRouter.route("/getlists/:boardId").get(getLists);
+boardRouter.route("/getlists/:id").get(getLists);
 
 boardRouter.route("/addList").patch(addListToBoard);
 
-boardRouter.route("/:userId").get(getAllUserBoards);
-
 boardRouter
-  .route("/:boardId")
+  .route("/:id")
+  .get(getAllUserBoards)
   .post(setBoardCookie)
   .patch(updateBoard)
   .delete(deleteBoard);

@@ -19,7 +19,7 @@ const setBoardCookie = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     try {
         if (!secret)
             throw new Error("Missing jwt secret");
-        const { boardId } = req.params;
+        const { id: boardId } = req.params;
         const token = jwt_simple_1.default.encode({ boardId, role: "public" }, secret);
         if (!token)
             throw new Error("Missing token...");

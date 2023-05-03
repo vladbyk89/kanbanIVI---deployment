@@ -66,7 +66,6 @@ class Board {
   static async setCurrentBoard(boardId: string) {
     await fetch(`${boardsAPI}/${boardId}`, {
       method: "POST",
-      body: JSON.stringify({ boardId }),
     }).catch((error) => console.error(error));
   }
 
@@ -96,8 +95,14 @@ class Board {
   }
 
   static async deleteBoard(boardId: string) {
+    const userId = currentUser.id;
     await fetch(`${boardsAPI}/${boardId}`, {
       method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
     })
       .then((res) => res.json())
       .then(({ boards }) => boards)
@@ -136,6 +141,21 @@ class Board {
         .then(({ list }) => list)
         .catch((error) => console.error(error));
     });
+
+    const listArrayID = this.listArray.map((list) => list.id);
+
+    await fetch(`${boardsAPI}/${this.id}`, {
+      method: "PATCH",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        boardName: this.name,
+        imageSrc: this.imageSrc,
+        listArray: listArrayID,
+      }),
+    }).catch((error) => console.error(error));
   }
 
   async edit(

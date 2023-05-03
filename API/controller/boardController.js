@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLists = exports.updateBoard = exports.addListToBoard = exports.deleteBoard = exports.getAllUserBoards = exports.getBoard = exports.createBoard = exports.getAllBoards = void 0;
 const BoardModel_1 = __importDefault(require("../model/BoardModel"));
 const UserModel_1 = __importDefault(require("../model/UserModel"));
-const ListModel_1 = __importDefault(require("../model/ListModel"));
+const notificationModel_1 = __importDefault(require("../model/notificationModel"));
 const jwt_simple_1 = __importDefault(require("jwt-simple"));
 const secret = process.env.JWT_SECRET;
 const getAllBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,10 +32,18 @@ const createBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     try {
         const { boardName, imageSrc, userId } = req.body;
         const user = yield UserModel_1.default.findById(userId);
+        if (!user)
+            throw new Error("user not found in create board route.");
         const board = yield BoardModel_1.default.create({
             boardName,
             imageSrc,
-            userArray: [user],
+            userArray: [userId],
+        });
+        const createNotification = yield notificationModel_1.default.create({
+            message: `Board by the name "${boardName}" is created.`,
+        });
+        yield UserModel_1.default.findByIdAndUpdate(userId, {
+            $push: { notifications: createNotification._id },
         });
         if (!secret)
             throw new Error("Missing jwt secret");
@@ -58,7 +66,6 @@ exports.createBoard = createBoard;
 const getBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const boardId = req.body;
-        console.log(boardId);
         const board = yield BoardModel_1.default.findById(boardId);
         res.status(200).json({ board });
     }
@@ -70,9 +77,9 @@ const getBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
 exports.getBoard = getBoard;
 const getAllUserBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.params;
-        const user = yield UserModel_1.default.findById(userId);
-        const boards = yield BoardModel_1.default.find({ userArray: user });
+        const { id: userId } = req.params;
+        // const user = await User.findById(userId);
+        const boards = yield BoardModel_1.default.find({ userArray: userId });
         res.status(200).send({ boards });
     }
     catch (error) {
@@ -83,8 +90,18 @@ const getAllUserBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, f
 exports.getAllUserBoards = getAllUserBoards;
 const deleteBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { boardId } = req.params;
-        const board = yield BoardModel_1.default.deleteOne({ _id: boardId });
+        const { id: boardId } = req.params;
+        const { userId } = req.body;
+        const findBoard = yield BoardModel_1.default.findById(boardId);
+        if (!findBoard)
+            return;
+        yield BoardModel_1.default.deleteOne({ _id: boardId });
+        const createNotification = yield notificationModel_1.default.create({
+            message: `Board by the name "${findBoard.boardName}" is deleted.`,
+        });
+        yield UserModel_1.default.findByIdAndUpdate(userId, {
+            $push: { notifications: createNotification._id },
+        });
         res.status(200).send({ ok: true });
     }
     catch (error) {
@@ -96,9 +113,8 @@ exports.deleteBoard = deleteBoard;
 const addListToBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { boardId, listId } = req.body;
-        const list = yield ListModel_1.default.findById(listId);
         yield BoardModel_1.default.findByIdAndUpdate(boardId, {
-            $push: { listArray: list },
+            $push: { listArray: listId },
         });
         const board = yield BoardModel_1.default.findById(boardId);
         res.status(201).json({ board });
@@ -111,9 +127,9 @@ const addListToBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 exports.addListToBoard = addListToBoard;
 const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { boardId } = req.params;
-        const { boardName, imageSrc } = req.body;
-        yield BoardModel_1.default.findByIdAndUpdate(boardId, { boardName, imageSrc });
+        const { id: boardId } = req.params;
+        const { boardName, imageSrc, listArray } = req.body;
+        yield BoardModel_1.default.findByIdAndUpdate(boardId, { boardName, imageSrc, listArray });
         const board = yield BoardModel_1.default.findById(boardId);
         res.status(201).json({ board });
     }
@@ -125,7 +141,7 @@ const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 exports.updateBoard = updateBoard;
 const getLists = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { boardId } = req.params;
+        const { id: boardId } = req.params;
         const board = yield BoardModel_1.default.findById(boardId).populate("listArray");
         res.status(201).json({ board });
     }
