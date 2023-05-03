@@ -14,7 +14,8 @@ window.addEventListener("click", async (e) => {
         .then((res) => res.json())
         .then(({ notifications }) => notifications)
         .catch((error) => console.error(error));
-
+      notificationDiv.innerHTML = "";
+      notificationDiv.append(renderNotifications(userNotifications));
       notificationDiv.style.display = "flex";
     } else {
       notificationDiv.style.display = "";

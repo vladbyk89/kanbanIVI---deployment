@@ -272,3 +272,12 @@ function renderBoardInBoardPage() {
     console.error(error);
   }
 }
+
+function renderNotifications(list: string[]) {
+  const ulEl = document.createElement("ul") as HTMLUListElement;
+  ulEl.innerHTML = list
+    .reverse()
+    .map((el) => `<li>${el}</li>`)
+    .join("");
+  return ulEl;
+}

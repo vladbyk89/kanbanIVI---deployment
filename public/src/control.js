@@ -245,3 +245,11 @@ function renderBoardInBoardPage() {
         console.error(error);
     }
 }
+function renderNotifications(list) {
+    const ulEl = document.createElement("ul");
+    ulEl.innerHTML = list
+        .reverse()
+        .map((el) => `<li>${el}</li>`)
+        .join("");
+    return ulEl;
+}
