@@ -59,7 +59,7 @@ export const getBoard = async (
 ) => {
   try {
     const boardId = req.body;
-
+    console.log(boardId);
     const board = await Board.findById(boardId);
 
     res.status(200).json({ board });
@@ -75,7 +75,7 @@ export const getAllUserBoards = async (
   next: NextFunction
 ) => {
   try {
-    const { id: userId } = req.params;
+    const { userId } = req.params;
 
     const user = await User.findById(userId);
 
@@ -94,7 +94,7 @@ export const deleteBoard = async (
   next: NextFunction
 ) => {
   try {
-    const { id: boardId } = req.params;
+    const { boardId } = req.params;
     const board = await Board.deleteOne({ _id: boardId });
 
     res.status(200).send({ ok: true });
@@ -132,13 +132,30 @@ export const updateBoard = async (
   next: NextFunction
 ) => {
   try {
-    const { id: boardId } = req.params;
+    const { boardId } = req.params;
 
     const { boardName, imageSrc } = req.body;
 
     await Board.findByIdAndUpdate(boardId, { boardName, imageSrc });
 
     const board = await Board.findById(boardId);
+
+    res.status(201).json({ board });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).send({ error: error.message });
+  }
+};
+
+export const getLists = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { boardId } = req.params;
+
+    const board = await Board.findById(boardId).populate("listArray");
 
     res.status(201).json({ board });
   } catch (error: any) {

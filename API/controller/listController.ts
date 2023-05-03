@@ -22,31 +22,37 @@ export const createList = async (
 ) => {
   try {
     const { listName, boardId } = req.body;
-    const board = await Board.findById(boardId);
-    const list = await List.create({ listName, board });
 
-    res.status(200).json({ list });
+    const list = await List.create({ listName });
+
+    const findBoard = await Board.findByIdAndUpdate(boardId, {
+      $push: { listArray: list._id },
+    });
+
+    const board = await Board.findById(boardId);
+
+    res.status(200).json({ list, board });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({ error: error.message });
   }
 };
 
-export const getBoardLists = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { id: boardId } = req.params;
-    const board = await Board.findById(boardId);
-    const lists = await List.find({ board });
-    res.status(200).json({ lists });
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).send({ error: error.message });
-  }
-};
+// export const getBoardLists = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { id: boardId } = req.params;
+//     const board = await Board.findById(boardId);
+//     const lists = await List.find({ board });
+//     res.status(200).json({ lists });
+//   } catch (error: any) {
+//     console.error(error);
+//     res.status(500).send({ error: error.message });
+//   }
+// };
 
 export const deleteList = async (
   req: Request,
@@ -72,12 +78,11 @@ export const updateList = async (
 ) => {
   try {
     const { id: listId } = req.params;
-    const { listName, cardsArray, boardId } = req.body;
-    const board = await Board.findById(boardId);
+    const { listName, cardsArray } = req.body;
+    
     const list = await List.findByIdAndUpdate(listId, {
       listName,
       cardsArray,
-      board,
     });
     res.status(201).json({ list });
   } catch (error: any) {

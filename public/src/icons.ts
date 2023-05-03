@@ -5,7 +5,7 @@ window.addEventListener("click", async (e) => {
   if (target.classList.contains("profileIcon")) {
     displayProfile(currentUser);
   }
-  
+
   if (target.classList.contains("notificationsIcon")) {
     console.log("Notification icon clicked...");
   }

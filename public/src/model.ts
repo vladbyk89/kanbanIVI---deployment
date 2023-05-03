@@ -75,14 +75,18 @@ class Board {
       .then((res) => res.json())
       .then(({ board }) => board)
       .catch((error) => console.error(error));
-    const boardLists: ListTemplate[] = await fetch(`${listsAPI}/${board._id}`)
+
+    const boardLists: ListTemplate[] = await fetch(
+      `${boardsAPI}/getlists/${board._id}`
+    )
       .then((res) => res.json())
-      .then(({ lists }) => lists)
+      .then(({ board }) => board.listArray)
       .catch((error) => console.error(error));
 
     const listArrayNew = boardLists.map(
       (list) => new List(list.listName, list.cardsArray, list._id)
     );
+
     currentBoard = new Board(
       board.boardName,
       board.imageSrc,
@@ -114,7 +118,7 @@ class Board {
 
       list
         .querySelectorAll("p")
-        .forEach((card) => cardsArray.push(card.innerHTML));
+        .forEach((card) => cardsArray.unshift(card.innerHTML));
 
       const newList = new List(listName, cardsArray, _id);
 
@@ -126,7 +130,7 @@ class Board {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ listName, cardsArray, boardId }),
+        body: JSON.stringify({ listName, cardsArray }),
       })
         .then((res) => res.json())
         .then(({ list }) => list)
@@ -235,53 +239,4 @@ class List {
     currentBoard.update();
     return listContainer;
   }
-}
-
-// ---------------------- pre made users ---------------------- //
-const preMadeUserList: User[] = [
-  new User(
-    "Vladislav",
-    "Bykanov",
-    "male",
-    "vladb89",
-    "12345678",
-    "vladi@gmail.com"
-  ),
-  new User("Itai", "Gelberg", "male", "itaiG", "87654321", "itaiGel@gmail.com"),
-  new User(
-    "Itay",
-    "Amosi",
-    "male",
-    "itayz1e",
-    "144322144",
-    "itayAmosi@gmail.com"
-  ),
-];
-
-const preMadeBoardList: Board[] = [
-  new Board("Golden Board", "./img/NASA.jpg"),
-  new Board("Cyan Board", "./img/pink-sea.jpg"),
-  new Board("Magenta Board", "./img/purple-flower.jpg"),
-  new Board("Salmon Board", "./img/sea.jpg"),
-  new Board("SlateBlue Board", "./img/wall-painting.jpg"),
-];
-
-const preMadeListList = [
-  new List("To Do", ["buy chocolate", "write a song", "go for a jog"]),
-  new List("Design", ["Design html page", "Create logo"]),
-  new List("Backlog", ["Register", "Accessibility", "CRUD Lists", "Login"]),
-  new List("Finish", [
-    "open repo",
-    "Create Main Page",
-    "Create Login Page",
-    "Create Sign Up page",
-  ]),
-];
-
-if (!localStorage.getItem("signedUpUsers")) {
-  preMadeBoardList[0].listArray.push(...preMadeListList);
-  preMadeUserList[0].boardList.push(...preMadeBoardList);
-  preMadeUserList[1].boardList.push(...preMadeBoardList);
-  preMadeUserList[2].boardList.push(...preMadeBoardList);
-  localStorage.setItem("signedUpUsers", JSON.stringify(preMadeUserList));
 }

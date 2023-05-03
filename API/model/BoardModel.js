@@ -39,6 +39,7 @@ exports.BoardSchema = new mongoose_1.Schema({
         type: [UserModel_1.UserSchema],
         required: true,
     },
+    listArray: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "List" }],
 }, {
     versionKey: false,
 });

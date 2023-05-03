@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateBoard = exports.addListToBoard = exports.deleteBoard = exports.getAllUserBoards = exports.getBoard = exports.createBoard = exports.getAllBoards = void 0;
+exports.getLists = exports.updateBoard = exports.addListToBoard = exports.deleteBoard = exports.getAllUserBoards = exports.getBoard = exports.createBoard = exports.getAllBoards = void 0;
 const BoardModel_1 = __importDefault(require("../model/BoardModel"));
 const UserModel_1 = __importDefault(require("../model/UserModel"));
 const ListModel_1 = __importDefault(require("../model/ListModel"));
@@ -58,6 +58,7 @@ exports.createBoard = createBoard;
 const getBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const boardId = req.body;
+        console.log(boardId);
         const board = yield BoardModel_1.default.findById(boardId);
         res.status(200).json({ board });
     }
@@ -69,7 +70,7 @@ const getBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
 exports.getBoard = getBoard;
 const getAllUserBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id: userId } = req.params;
+        const { userId } = req.params;
         const user = yield UserModel_1.default.findById(userId);
         const boards = yield BoardModel_1.default.find({ userArray: user });
         res.status(200).send({ boards });
@@ -82,7 +83,7 @@ const getAllUserBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, f
 exports.getAllUserBoards = getAllUserBoards;
 const deleteBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id: boardId } = req.params;
+        const { boardId } = req.params;
         const board = yield BoardModel_1.default.deleteOne({ _id: boardId });
         res.status(200).send({ ok: true });
     }
@@ -110,7 +111,7 @@ const addListToBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 exports.addListToBoard = addListToBoard;
 const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id: boardId } = req.params;
+        const { boardId } = req.params;
         const { boardName, imageSrc } = req.body;
         yield BoardModel_1.default.findByIdAndUpdate(boardId, { boardName, imageSrc });
         const board = yield BoardModel_1.default.findById(boardId);
@@ -122,3 +123,15 @@ const updateBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.updateBoard = updateBoard;
+const getLists = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { boardId } = req.params;
+        const board = yield BoardModel_1.default.findById(boardId).populate("listArray");
+        res.status(201).json({ board });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send({ error: error.message });
+    }
+});
+exports.getLists = getLists;

@@ -13,10 +13,6 @@ export const ListSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    board: {
-      type: BoardSchema,
-      required: true,
-    },
     cardsArray: {
       type: [String],
     },
