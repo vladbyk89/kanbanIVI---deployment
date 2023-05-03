@@ -144,6 +144,7 @@ class Board {
 
     const listArrayID = this.listArray.map((list) => list.id);
 
+    //update board on DB
     await fetch(`${boardsAPI}/${this.id}`, {
       method: "PATCH",
       headers: {

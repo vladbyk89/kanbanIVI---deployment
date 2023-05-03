@@ -37,11 +37,9 @@ const boardCookieAuthentication = (req, res, next) => __awaiter(void 0, void 0, 
         if (!secret)
             throw new Error("Missing jwt secret");
         const token = req.cookies;
-        console.log(token.board);
         if (!token)
             throw new Error("Missing token from cookise");
         const decodedToken = jwt_simple_1.default.decode(token.board, secret);
-        console.log(decodedToken);
         req.body = decodedToken.boardId;
         next();
     }

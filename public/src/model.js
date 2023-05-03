@@ -109,6 +109,7 @@ class Board {
                     .catch((error) => console.error(error));
             }));
             const listArrayID = this.listArray.map((list) => list.id);
+            //update board on DB
             yield fetch(`${boardsAPI}/${this.id}`, {
                 method: "PATCH",
                 headers: {
