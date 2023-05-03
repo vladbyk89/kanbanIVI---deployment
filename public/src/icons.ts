@@ -7,7 +7,18 @@ window.addEventListener("click", async (e) => {
   }
 
   if (target.classList.contains("notificationsIcon")) {
-    console.log("Notification icon clicked...");
+    if (!notificationDiv.style.display) {
+      const userNotifications = await fetch(
+        `${usersAPI}/getNotifications/${currentUser.id}`
+      )
+        .then((res) => res.json())
+        .then(({ notifications }) => notifications)
+        .catch((error) => console.error(error));
+
+      notificationDiv.style.display = "flex";
+    } else {
+      notificationDiv.style.display = "";
+    }
   }
 
   if (target.classList.contains("signOutbtn")) {

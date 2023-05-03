@@ -13,6 +13,7 @@
   cursor: default;
   overflow-y: auto;
   padding: 0.5rem;
+  display: none;
 }
 .notificationDiv ul {
   display: flex;

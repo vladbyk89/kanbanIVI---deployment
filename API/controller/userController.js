@@ -139,7 +139,10 @@ const getNotifications = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     try {
         const { userId } = req.params;
         const user = yield UserModel_1.default.findById(userId).populate("notifications");
-        res.status(201).json({ user });
+        if (!user)
+            throw new Error("User not found at get notifications route.");
+        const notifications = user.notifications.map((x) => x.message);
+        res.status(201).json({ notifications });
     }
     catch (error) {
         console.error(error);

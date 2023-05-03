@@ -2,6 +2,9 @@ import mongoose, { Schema } from "mongoose";
 
 export interface BoardInterface {
   boardName: string;
+  imageSrc: string;
+  userArray: [string];
+  listArray: [string];
   _id: string;
 }
 
@@ -26,4 +29,4 @@ export const BoardSchema: Schema = new Schema(
   }
 );
 
-export default mongoose.model<Board>("Board", BoardSchema);
+export default mongoose.model<BoardInterface>("Board", BoardSchema);

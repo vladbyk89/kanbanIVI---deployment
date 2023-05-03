@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from "express";
-import User from "../model/UserModel";
+import User, { UserInterface } from "../model/UserModel";
 import jwt from "jwt-simple";
+import { error } from "console";
 const secret = process.env.JWT_SECRET;
 
 export const getAllUsers = async (
@@ -163,12 +164,16 @@ export const getNotifications = async (
   try {
     const { userId } = req.params;
 
-    const user = await User.findById(userId).populate("notifications");
+    const user: UserInterface | null = await User.findById(userId).populate(
+      "notifications"
+    );
+    if (!user) throw new Error("User not found at get notifications route.");
 
-    res.status(201).json({ user });
+    const notifications = user.notifications.map((x) => x.message);
+
+    res.status(201).json({ notifications });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({ error: error.message });
   }
 };
-

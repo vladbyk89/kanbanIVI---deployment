@@ -6,6 +6,7 @@ interface UserTemplate {
   password: string;
   email: string;
   boardList: [BoardTemplate];
+  notifications: [NotificationInterface];
   _id: string;
 }
 
@@ -260,4 +261,9 @@ class List {
     currentBoard.update();
     return listContainer;
   }
+}
+
+interface NotificationInterface {
+  message: string;
+  _id: string;
 }

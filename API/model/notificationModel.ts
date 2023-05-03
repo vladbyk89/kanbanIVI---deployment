@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-interface Notification {
+export interface NotificationInterface {
   message: string;
   _id: string;
 }
@@ -17,4 +17,4 @@ export const NotificationSchema: Schema = new Schema(
   }
 );
 
-export default mongoose.model<Notification>("Notification", NotificationSchema);
+export default mongoose.model<NotificationInterface>("Notification", NotificationSchema);

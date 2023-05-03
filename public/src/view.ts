@@ -49,6 +49,9 @@ const backgroundImageSelectionDiv = document.querySelector(
 const imageDisplayedInCreate = document.querySelector(
   "#imageCreateWindow"
 ) as HTMLImageElement;
+const notificationDiv = document.querySelector(
+  ".notificationDiv"
+) as HTMLDivElement;
 
 // Buttons
 const createBoardWindowBtn = document.querySelector(

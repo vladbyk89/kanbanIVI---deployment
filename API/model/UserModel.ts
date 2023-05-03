@@ -1,14 +1,15 @@
 import mongoose, { Schema } from "mongoose";
-import { BoardSchema } from "./BoardModel";
-
-interface User {
+import { BoardInterface } from "./BoardModel";
+import { NotificationInterface } from "./notificationModel";
+export interface UserInterface {
   firstName: string;
   lastName: string;
   gender: string;
   userName: string;
   password: string;
   email: string;
-  boardList: [string];
+  boardList: [BoardInterface];
+  notifications: [NotificationInterface];
   _id: string;
 }
 
@@ -45,4 +46,4 @@ export const UserSchema: Schema = new Schema(
   }
 );
 
-export default mongoose.model<User>("User", UserSchema);
+export default mongoose.model<UserInterface>("User", UserSchema);

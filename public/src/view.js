@@ -23,6 +23,7 @@ const newBoardWindow = document.querySelector(".newBoardWindow");
 const boardArea = document.querySelector(".mainpageContainer__main__boards__boardArea");
 const backgroundImageSelectionDiv = document.querySelector(".backgroundSelectionDiv");
 const imageDisplayedInCreate = document.querySelector("#imageCreateWindow");
+const notificationDiv = document.querySelector(".notificationDiv");
 // Buttons
 const createBoardWindowBtn = document.querySelector(".createBoardWindowBtn");
 const createBoardBtn = document.querySelector(".createBoardBtn");
