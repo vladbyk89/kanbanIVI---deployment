@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLists = exports.updateBoard = exports.addListToBoard = exports.deleteBoard = exports.getAllUserBoards = exports.getBoard = exports.createBoard = exports.getAllBoards = void 0;
 const BoardModel_1 = __importDefault(require("../model/BoardModel"));
 const UserModel_1 = __importDefault(require("../model/UserModel"));
+const ListModel_1 = __importDefault(require("../model/ListModel"));
 const notificationModel_1 = __importDefault(require("../model/notificationModel"));
 const jwt_simple_1 = __importDefault(require("jwt-simple"));
 const secret = process.env.JWT_SECRET;
@@ -93,15 +94,10 @@ const deleteBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         const { id: boardId } = req.params;
         const { userId } = req.body;
         const findBoard = yield BoardModel_1.default.findById(boardId);
-        if (!findBoard)
-            return;
+        if (findBoard) {
+            findBoard.listArray.forEach((list) => __awaiter(void 0, void 0, void 0, function* () { return yield ListModel_1.default.findByIdAndDelete(list); }));
+        }
         yield BoardModel_1.default.deleteOne({ _id: boardId });
-        const createNotification = yield notificationModel_1.default.create({
-            message: `Board by the name "${findBoard.boardName}" is deleted.`,
-        });
-        yield UserModel_1.default.findByIdAndUpdate(userId, {
-            $push: { notifications: createNotification._id },
-        });
         res.status(200).send({ ok: true });
     }
     catch (error) {

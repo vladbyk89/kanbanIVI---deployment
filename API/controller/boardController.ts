@@ -113,17 +113,13 @@ export const deleteBoard = async (
 
     const findBoard: BoardInterface | null = await Board.findById(boardId);
 
-    if (!findBoard) return;
+    if (findBoard) {
+      findBoard.listArray.forEach(
+        async (list) => await List.findByIdAndDelete(list)
+      );
+    }
 
     await Board.deleteOne({ _id: boardId });
-
-    const createNotification = await Notification.create({
-      message: `Board by the name "${findBoard.boardName}" is deleted.`,
-    });
-
-    await User.findByIdAndUpdate(userId, {
-      $push: { notifications: createNotification._id },
-    });
 
     res.status(200).send({ ok: true });
   } catch (error: any) {

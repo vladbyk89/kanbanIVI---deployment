@@ -83,8 +83,12 @@ if (window.location.pathname.endsWith("/main")) {
       const check = confirm("Are you sure you want to delete?");
       if (check) {
         await Board.deleteBoard(target.dataset.name);
-        const boards = await getUserBoards(currentUser.id);
-        renderBoardsToMain(boards);
+        const boardName = target.parentElement?.firstElementChild?.innerHTML;
+        if (target.parentElement) target.parentElement.remove();
+        const message = `${boardName} was deleted.`;
+        await createNotification(message, currentUser.id);
+        // const boards = await getUserBoards(currentUser.id);
+        // renderBoardsToMain(boards);
       }
     }
 
@@ -193,9 +197,8 @@ if (window.location.pathname.endsWith("/board")) {
       const listName = element.querySelector("h2")?.innerHTML;
 
       element.remove();
-      
-      if (element.classList.contains("boardContainer__main__list")) {
 
+      if (element.classList.contains("boardContainer__main__list")) {
         const listId = element.id;
         const boardName = currentBoard.name;
         const userId = currentUser.id;
@@ -209,7 +212,7 @@ if (window.location.pathname.endsWith("/board")) {
           body: JSON.stringify({ userId, listName, boardName }),
         }).catch((error) => console.error(error));
       }
-      
+
       currentBoard.update();
     }
   });

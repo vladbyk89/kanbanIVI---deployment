@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-
+import { ListInterface } from "../model/ListModel";
 export interface BoardInterface {
   boardName: string;
   imageSrc: string;

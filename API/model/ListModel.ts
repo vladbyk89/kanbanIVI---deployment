@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { BoardSchema } from "./BoardModel";
 
-interface ListInterface {
+export interface ListInterface {
   listName: string;
   cardsArray: [string];
   _id: string;
