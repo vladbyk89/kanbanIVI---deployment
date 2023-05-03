@@ -23,7 +23,7 @@ export const createList = async (
   next: NextFunction
 ) => {
   try {
-    const { listName, boardId, userId } = req.body;
+    const { listName, boardId } = req.body;
 
     const list = await List.create({ listName });
 
@@ -35,15 +35,7 @@ export const createList = async (
       $push: { listArray: list._id },
     });
 
-    const createNotification = await Notification.create({
-      message: `List by the name "${listName}" is created at board - ${board.boardName}.`,
-    });
-
-    await User.findByIdAndUpdate(userId, {
-      $push: { notifications: createNotification._id },
-    });
-
-    res.status(200).json({ list, board });
+    res.status(200).json({ list });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({ error: error.message });
@@ -57,20 +49,10 @@ export const deleteList = async (
 ) => {
   try {
     const { id: listId } = req.params;
-    const { userId, listName, boardName } = req.body;
 
-    const list = await List.deleteOne({ _id: listId });
-    const lists = await List.find({});
+    await List.deleteOne({ _id: listId });
 
-    const createNotification = await Notification.create({
-      message: `List by the name "${listName}" is deleted at board - ${boardName}.`,
-    });
-
-    await User.findByIdAndUpdate(userId, {
-      $push: { notifications: createNotification._id },
-    });
-
-    res.status(200).send({ lists });
+    res.status(200).json({ msg: "Delete successfully." });
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ error: error.message });

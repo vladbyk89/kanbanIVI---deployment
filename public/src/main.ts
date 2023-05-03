@@ -85,7 +85,7 @@ if (window.location.pathname.endsWith("/main")) {
         await Board.deleteBoard(target.dataset.name);
         const boardName = target.parentElement?.firstElementChild?.innerHTML;
         if (target.parentElement) target.parentElement.remove();
-        const message = `${boardName} was deleted.`;
+        const message = `"${boardName}" was deleted.`;
         await createNotification(message, currentUser.id);
         // const boards = await getUserBoards(currentUser.id);
         // renderBoardsToMain(boards);
@@ -184,6 +184,7 @@ if (window.location.pathname.endsWith("/board")) {
   boardContainer.addEventListener("keyup", () => {
     currentBoard.update();
   });
+
   newListInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
       List.createList(newListInput.value, currentBoard.id);
@@ -205,12 +206,10 @@ if (window.location.pathname.endsWith("/board")) {
 
         await fetch(`${listsAPI}/${listId}`, {
           method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId, listName, boardName }),
         }).catch((error) => console.error(error));
+
+        const message = `"${listName}" deleted at board #${boardName}#`;
+        await createNotification(message, userId);
       }
 
       currentBoard.update();

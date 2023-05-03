@@ -174,7 +174,7 @@ class List {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ listName, boardId, userId }),
+                body: JSON.stringify({ listName, boardId }),
             })
                 .then((res) => res.json())
                 .then(({ list }) => list)
@@ -182,6 +182,8 @@ class List {
             const newList = new List(listName, [], createdList._id);
             boardContainer.insertBefore(newList.createListElement(), trashCanDiv);
             newListInput.value = "";
+            const message = `"${listName}" List is created at board #${currentBoard.name}#`;
+            yield createNotification(message, userId);
         });
     }
     createListElement() {

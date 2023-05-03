@@ -14,9 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLists = exports.updateBoard = exports.addListToBoard = exports.deleteBoard = exports.getAllUserBoards = exports.getBoard = exports.createBoard = exports.getAllBoards = void 0;
 const BoardModel_1 = __importDefault(require("../model/BoardModel"));
-const UserModel_1 = __importDefault(require("../model/UserModel"));
 const ListModel_1 = __importDefault(require("../model/ListModel"));
-const notificationModel_1 = __importDefault(require("../model/notificationModel"));
 const jwt_simple_1 = __importDefault(require("jwt-simple"));
 const secret = process.env.JWT_SECRET;
 const getAllBoards = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,20 +30,17 @@ exports.getAllBoards = getAllBoards;
 const createBoard = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { boardName, imageSrc, userId } = req.body;
-        const user = yield UserModel_1.default.findById(userId);
-        if (!user)
-            throw new Error("user not found in create board route.");
         const board = yield BoardModel_1.default.create({
             boardName,
             imageSrc,
             userArray: [userId],
         });
-        const createNotification = yield notificationModel_1.default.create({
-            message: `Board by the name "${boardName}" is created.`,
-        });
-        yield UserModel_1.default.findByIdAndUpdate(userId, {
-            $push: { notifications: createNotification._id },
-        });
+        // const createNotification = await Notification.create({
+        //   message: `Board by the name "${boardName}" is created.`,
+        // });
+        // await User.findByIdAndUpdate(userId, {
+        //   $push: { notifications: createNotification._id },
+        // });
         if (!secret)
             throw new Error("Missing jwt secret");
         const boardId = board._id;

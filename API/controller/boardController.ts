@@ -28,23 +28,19 @@ export const createBoard = async (
   try {
     const { boardName, imageSrc, userId } = req.body;
 
-    const user = await User.findById(userId);
-
-    if (!user) throw new Error("user not found in create board route.");
-
     const board = await Board.create({
       boardName,
       imageSrc,
       userArray: [userId],
     });
 
-    const createNotification = await Notification.create({
-      message: `Board by the name "${boardName}" is created.`,
-    });
+    // const createNotification = await Notification.create({
+    //   message: `Board by the name "${boardName}" is created.`,
+    // });
 
-    await User.findByIdAndUpdate(userId, {
-      $push: { notifications: createNotification._id },
-    });
+    // await User.findByIdAndUpdate(userId, {
+    //   $push: { notifications: createNotification._id },
+    // });
 
     if (!secret) throw new Error("Missing jwt secret");
 
