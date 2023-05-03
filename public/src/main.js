@@ -35,7 +35,10 @@ if (window.location.pathname.endsWith("/main")) {
         const boards = yield getUserBoards(currentUser.id);
         renderBoardsToMain(boards);
     }));
-    createBoardWindowBtn.addEventListener("click", () => (newBoardWindow.style.display = "flex"));
+    createBoardWindowBtn.addEventListener("click", () => {
+        newBoardWindow.style.display = "flex";
+        newBoardName.focus();
+    });
     cancelCreateBoardBtn.addEventListener("click", () => (newBoardWindow.style.display = "none"));
     boardImageBtn.addEventListener("click", () => {
         backgroundImageSelectionDiv.style.display = "grid";

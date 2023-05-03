@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { UserSchema } from "./UserModel";
 
 interface Notification {
   message: string;
@@ -12,7 +11,6 @@ export const NotificationSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    user: UserSchema,
   },
   {
     versionKey: false,

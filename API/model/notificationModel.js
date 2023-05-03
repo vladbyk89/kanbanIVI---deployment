@@ -25,13 +25,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationSchema = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const UserModel_1 = require("./UserModel");
 exports.NotificationSchema = new mongoose_1.Schema({
     message: {
         type: String,
         required: true,
     },
-    user: UserModel_1.UserSchema,
 }, {
     versionKey: false,
 });
