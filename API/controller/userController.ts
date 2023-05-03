@@ -126,7 +126,7 @@ export const deleteUser = async (
   next: NextFunction
 ) => {
   try {
-    const { id: userId } = req.params;
+    const { userId } = req.params;
     const user = await User.deleteOne({ _id: userId });
     const users = await User.find({});
 
@@ -143,12 +143,29 @@ export const updateUser = async (
   next: NextFunction
 ) => {
   try {
-    const { id: userId } = req.params;
+    const { userId } = req.params;
     const data = req.body;
     const users = await User.find({});
     const user = await User.findById({ _id: userId });
 
     res.status(201).json({ users });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).send({ error: error.message });
+  }
+};
+
+export const getNotifications = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId).populate("notifications");
+
+    res.status(201).json({ user });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({ error: error.message });

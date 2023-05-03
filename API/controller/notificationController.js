@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateNotification = exports.deleteNotification = exports.passwordRecovery = exports.login = exports.getNotification = exports.createNotification = exports.getAllNotifications = void 0;
 const notificationModel_1 = __importDefault(require("../model/notificationModel"));
+const UserModel_1 = __importDefault(require("../model/UserModel"));
 const jwt_simple_1 = __importDefault(require("jwt-simple"));
 const secret = process.env.JWT_SECRET;
 const getAllNotifications = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,13 +29,13 @@ const getAllNotifications = (req, res, next) => __awaiter(void 0, void 0, void 0
 exports.getAllNotifications = getAllNotifications;
 const createNotification = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { message } = req.body;
-        // const findNotification = await Notification.findOne({ message });
-        // if (findNotification) return res.send(`Email exists in the system`);
+        const { message, userId } = req.body;
         const notification = yield notificationModel_1.default.create({ message });
-        res
-            .status(200)
-            .send({ success: true, message: `Created => ${notification}` });
+        const findUser = yield UserModel_1.default.findByIdAndUpdate(userId, {
+            $push: { notifications: notification._id },
+        });
+        const user = yield UserModel_1.default.findById(userId).populate("notifications");
+        res.status(200).send({ success: true, notification, user });
     }
     catch (error) {
         console.error(error);

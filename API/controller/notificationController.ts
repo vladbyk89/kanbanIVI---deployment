@@ -1,5 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import Notification from "../model/notificationModel";
+import User from "../model/UserModel";
 import jwt from "jwt-simple";
 const secret = process.env.JWT_SECRET;
 
@@ -22,17 +23,17 @@ export const createNotification = async (
   next: NextFunction
 ) => {
   try {
-    const { message } = req.body;
-
-    // const findNotification = await Notification.findOne({ message });
-
-    // if (findNotification) return res.send(`Email exists in the system`);
+    const { message, userId } = req.body;
 
     const notification = await Notification.create({ message });
 
-    res
-      .status(200)
-      .send({ success: true, message: `Created => ${notification}` });
+    const findUser = await User.findByIdAndUpdate(userId, {
+      $push: { notifications: notification._id },
+    });
+
+    const user = await User.findById(userId).populate("notifications");
+
+    res.status(200).send({ success: true, notification, user });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({ error: error.message });

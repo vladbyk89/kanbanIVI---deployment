@@ -15,7 +15,7 @@ window.addEventListener("click", (e) => __awaiter(void 0, void 0, void 0, functi
         displayProfile(currentUser);
     }
     if (target.classList.contains("notificationsIcon")) {
-        // nothing yet...
+        console.log("Notification icon clicked...");
     }
     if (target.classList.contains("signOutbtn")) {
         removeCookie(usersAPI);
