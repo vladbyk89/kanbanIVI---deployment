@@ -8,6 +8,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+function handleLogin(e) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            e.preventDefault();
+            const userName = signInForm.userName.value;
+            const password = signInForm.password.value;
+            const user = yield fetch(`${usersAPI}/login`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userName, password }),
+            })
+                .then((res) => res.json())
+                .then(({ findUser }) => findUser)
+                .catch((error) => console.error(error));
+            if (!user) {
+                alert("User doesn't exist in database. Please check your input.");
+            }
+            else {
+                location.href = "/main";
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+}
 function handleRecovery(e) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

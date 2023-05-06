@@ -77,11 +77,9 @@ export const login = async (
   try {
     const { userName, password } = req.body;
 
-    //User Authentication....
-
     const findUser = await User.findOne({ userName, password });
 
-    if (!findUser) throw new Error("User not found on get user function");
+    if (!findUser) return res.status(404).json({ message: "User not found" });
 
     if (!secret) throw new Error("Missing jwt secret");
 
@@ -91,7 +89,8 @@ export const login = async (
       maxAge: 60 * 60 * 1000, //1 hours
       httpOnly: true,
     });
-    res.redirect("/main");
+    // res.redirect("/main");
+    res.status(200).json({ findUser });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({ error: error.message });

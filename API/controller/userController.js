@@ -70,10 +70,9 @@ exports.getUser = getUser;
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userName, password } = req.body;
-        //User Authentication....
         const findUser = yield UserModel_1.default.findOne({ userName, password });
         if (!findUser)
-            throw new Error("User not found on get user function");
+            return res.status(404).json({ message: "User not found" });
         if (!secret)
             throw new Error("Missing jwt secret");
         const token = jwt_simple_1.default.encode({ userId: findUser._id, role: "public" }, secret);
@@ -81,7 +80,8 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             maxAge: 60 * 60 * 1000,
             httpOnly: true,
         });
-        res.redirect("/main");
+        // res.redirect("/main");
+        res.status(200).json({ findUser });
     }
     catch (error) {
         console.error(error);
