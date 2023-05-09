@@ -1,6 +1,5 @@
 .notificationsIcon {
-  position: relative;
-}
+  position: relative; }
 
 .notificationDiv {
   box-shadow: 0 0 5px black;
@@ -13,23 +12,19 @@
   cursor: default;
   overflow-y: auto;
   padding: 0.5rem;
-  display: none;
-}
-.notificationDiv ul {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.notificationDiv ul li {
-  display: flex;
-  border-bottom: 1px solid black;
-  padding: 0.5rem;
-  font-size: 0.7rem;
-  font-family: "Courier New", Courier, monospace;
-  color: black;
-  font-weight: bolder;
-}
+  display: none; }
+  .notificationDiv ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; }
+    .notificationDiv ul li {
+      display: flex;
+      border-bottom: 1px solid black;
+      padding: 0.5rem;
+      font-size: 0.7rem;
+      font-family: "Courier New", Courier, monospace;
+      color: black;
+      font-weight: bolder; }
 
 .notificationDiv::-webkit-scrollbar {
-  display: none;
-}/*# sourceMappingURL=notifications.css.map */
+  display: none; }
