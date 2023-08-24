@@ -19,10 +19,10 @@ const userCookieAuthentication = (req, res, next) => __awaiter(void 0, void 0, v
     try {
         if (!secret)
             throw new Error("Missing jwt secret");
-        const token = req.cookies;
+        const token = req.cookies.user;
         if (!token)
             throw new Error("Missing token from cookise");
-        const decodedToken = jwt_simple_1.default.decode(token.user, secret);
+        const decodedToken = jwt_simple_1.default.decode(token, secret);
         req.body = decodedToken.userId;
         next();
     }

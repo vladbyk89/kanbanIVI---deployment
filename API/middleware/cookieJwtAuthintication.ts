@@ -9,11 +9,11 @@ export const userCookieAuthentication = async (
 ) => {
   try {
     if (!secret) throw new Error("Missing jwt secret");
-    const token = req.cookies;
+    const token = req.cookies.user;
 
     if (!token) throw new Error("Missing token from cookise");
 
-    const decodedToken = jwt.decode(token.user, secret);
+    const decodedToken = jwt.decode(token, secret);
 
     req.body = decodedToken.userId;
 
@@ -37,7 +37,7 @@ export const boardCookieAuthentication = async (
     if (!token) throw new Error("Missing token from cookise");
 
     const decodedToken = jwt.decode(token.board, secret);
-    
+
     req.body = decodedToken.boardId;
 
     next();

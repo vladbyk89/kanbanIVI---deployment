@@ -25,7 +25,7 @@ class User {
                 const user = yield fetch(`${usersAPI}/getUser`)
                     .then((res) => res.json())
                     .then(({ user }) => user)
-                    .catch((error) => console.error(error));
+                    .catch((error) => console.error("error"));
                 if (!user)
                     return false;
                 currentUser = new User(user.firstName, user.lastName, user.gender, user.userName, user.password, user.email, user._id);

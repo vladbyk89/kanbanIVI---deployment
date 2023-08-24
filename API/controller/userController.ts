@@ -61,7 +61,9 @@ export const getUser = async (
 ) => {
   try {
     const userId = req.body;
+
     const user = await User.findById(userId);
+    
     res.json({ user });
   } catch (error: any) {
     console.error(error);

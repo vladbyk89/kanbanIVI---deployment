@@ -27,7 +27,7 @@ class User {
       const user = await fetch(`${usersAPI}/getUser`)
         .then((res) => res.json())
         .then(({ user }) => user)
-        .catch((error) => console.error(error));
+        .catch((error) => console.error("error"));
 
       if (!user) return false;
 
